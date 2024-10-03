@@ -23,7 +23,8 @@ app.post('/post', async (req, res) => {
         
         await Data_MB.create({
             title: createPayLoad.title,
-            description: createPayLoad.description 
+            description: createPayLoad.description,
+            completed: false
         });
 
 
@@ -51,6 +52,18 @@ app.put('/update', async (req, res) => {
         });
         return;
     }
+    
+    Data_MB.update({
+        _id:req.body.id
+    },
+{
+      completed:true
+})
+
+
+    res.json({
+       message:"data got updated"
+    })
 });
 
 
