@@ -1,19 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
+const createdSchema = new mongoose.Schema({
+  title: String, // Correct capitalization
+  description: String, // Correct capitalization
+  completed: Boolean, // Correct capitalization
+});
 
+const User = mongoose.model("User", createdSchema);
 
-mongoose.connect("mongodb+srv://Manash_7732:zCVeBidWmpxjaS67@cluster0.ooomc.mongodb.net/").then(function(){
-    console.log("mongoose server is connected")
-}).cathch(function(error){
-    console.log("server us not connected");
-})
-
-const createdSchema= new mongoose.schema({
-    title:string,
-    description:string,
-    completed:boolean
-})
-
-const User = mongoose.model('User', createdSchema);  
 module.exports = User;
-
