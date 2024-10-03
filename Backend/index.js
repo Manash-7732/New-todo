@@ -1,42 +1,60 @@
 const express = require('express');
-const { Valid } = require('./zod');
-const port = 5000;
+const { Valid } = require('./zod'); 
+const { Data_MB } = require('./Models/DB'); 
 
+const app = express();
+const port = 5000;
 
 app.use(express.json());
 
 
-app.post('/post', function (req, res) {
+app.post('/post', async (req, res) => {
     const createPayLoad = req.body;
-    const parsePayLoad = Valid.safeParse(createPayLoad);
+    const parsePayLoad = Valid.safeParse(createPayLoad); // Validate input using Zod
 
     if (!parsePayLoad.success) {
         return res.status(400).json({
-            message: "You are sending the wrong input",
-           
+            message: "You are sending the wrong input"
+        });
+        return;
+    }
+
+   
+        
+        await Data_MB.create({
+            title: createPayLoad.title,
+            description: createPayLoad.description 
+        });
+
+
+        res.json({
+            message:"Done!"
+        })
+});
+
+
+app.get('/show', async function (req, res) {
+    const todo=await Data_MB.find({});
+    res,json({
+        todo
+    })
+});
+
+
+app.put('/update', async (req, res) => {
+    const createPayLoad = req.body;
+    const parsePayLoad = Valid.safeParse(createPayLoad); // Validate input using Zod
+
+    if (!parsePayLoad.success) {
+        return res.status(400).json({
+            message: "You are sending the wrong input"
         });
         return;
     }
 });
 
 
-app.get('/show', function (req, res) {
-    res.send("Hello world");
-});
 
-
-app.put('/update', function (req, res) {
-    const createPayLoad = req.body;
-    const parsePayLoad = Valid.safeParse(createPayLoad);
-
-    if (!parsePayLoad.success) {
-        return res.status(400).json({
-            message: "You are sending the wrong input",
-           
-        });
-        return;
-    }
-});
 
 
 app.listen(port, function () {
