@@ -2,10 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const zod = require("./zod");
 const User = require("./Models/DB");
+const cors = require("cors");
 
 const app = express();
 const port = 5000;
-
+app.use(cors());
 app.use(express.json());
 
 app.post("/post", async (req, res) => {
@@ -21,23 +22,28 @@ app.post("/post", async (req, res) => {
   await User.create({
     title: createPayLoad.title,
     description: createPayLoad.description,
-    completed: false,
+    completed: createPayLoad.completed,
   });
 
-  return res.json({
+  res.json({
     message: "Done!",
   });
 });
 
 app.get("/show", async function (req, res) {
-  const todo = await User.find({});
+  const todos = await User.find();
 
   res.json({
-    todo,
+    todos,
   });
 });
 
 app.put("/update", async (req, res) => {
+  const id = zod.updateId.safeParse(req.body);
+  if (!id.success) {
+    res.send("wrong input");
+  }
+
   await User.findByIdAndUpdate(
     {
       _id: req.body.id,
